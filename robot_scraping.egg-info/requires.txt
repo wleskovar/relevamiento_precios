@@ -1,0 +1,1 @@
+sqlalchemy>=1.4.39requests>=2.28.1openpyxl>=3.0.10pandas>=1.4.3psycopg2>=2.9.3python-decouple>=3.6python-dotenv>=0.20.0

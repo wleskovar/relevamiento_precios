@@ -1,0 +1,8 @@
+README.md
+setup.py
+robot_scraping/log_configuracion.py
+robot_scraping.egg-info/PKG-INFO
+robot_scraping.egg-info/SOURCES.txt
+robot_scraping.egg-info/dependency_links.txt
+robot_scraping.egg-info/requires.txt
+robot_scraping.egg-info/top_level.txt

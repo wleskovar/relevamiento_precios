@@ -1,0 +1,30 @@
+from selenium import webdriver
+import argparse
+from typing import Optional
+import logging
+from decouple import config
+from robot_scraping.log_configuracion import configure_logger
+from robot_scraping.mercadona import mercadona
+
+
+
+def init_browser():
+    """ Inicializa el robot al tipo de navegador y a la pagina
+
+    Returns:
+        objeto: retorna el driver a la pagina 
+    """
+    configure_logger()
+    logger = logging.getLogger()
+    driver = webdriver.Chrome(config('DRIVER_CHROME'))
+    #driver = webdriver.Firefox()
+    driver.implicitly_wait(10)
+    driver.maximize_window()
+    return driver
+ 
+if __name__ == "__main__":
+    
+    driver = init_browser()
+    mercadona(driver)
+
+    
