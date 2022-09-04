@@ -22,7 +22,7 @@ def init_browser():
     driver.maximize_window()
     return driver
  
-if __name__ == "__main__":
+if __name__ == "__main__": 
     
     driver = init_browser()
     mercadona(driver)

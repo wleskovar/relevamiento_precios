@@ -3,6 +3,7 @@ import logging
 from decouple import config
 from robot_scraping.log_configuracion import configure_logger
 from robot_scraping.home_to_categorias import home_to_categorias
+from robot_scraping.scrap_categorias_productos import scrap_categorias_productos
 
 
 def mercadona(driver:Optional[object]) ->None:
@@ -15,4 +16,5 @@ def mercadona(driver:Optional[object]) ->None:
         logger.error(ex)
         raise ex
 
-    home_to_categorias(driver)
+    grupo_categorias = home_to_categorias(driver)
+    scrap_categorias_productos(grupo_categorias)

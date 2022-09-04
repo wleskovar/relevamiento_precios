@@ -1,8 +1,9 @@
+from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
-
+from urllib.parse import urlparse
 from typing import Optional
 import logging
 from decouple import config
@@ -41,7 +42,8 @@ def ingresando_codigo(driver:Optional[object]) -> None:
 
 CATEGORIAS = '//a[@href="/categories"]'
 
-def home_to_categorias(driver:Optional[object]) -> None:
+
+def home_to_categorias(driver:Optional[object]) -> int:
     aceptando_cookies(driver)
     ingresando_codigo(driver)
 
@@ -49,10 +51,22 @@ def home_to_categorias(driver:Optional[object]) -> None:
           EC.presence_of_element_located((By.XPATH, CATEGORIAS))
         )
     categorias.send_keys("webdriver" + Keys.ENTER)
-   
-    print(driver.current_url)
+
+    sleep(12.0)
 
     
+        
+    return driver
+
+
+
+    # url_categoria = driver.current_url
+    # url_parceada = urlparse(url_categoria)
+    # url_path = url_parceada[2].split("/")
+    # codigo = int(url_path[2])
+    # print(codigo)
+    # driver.close() 
    
+   # carga todos los grupos de categorias y la retorna para su tratamiento 
     
 
