@@ -9,12 +9,82 @@ from typing import Optional
 import logging
 from decouple import config
 import pandas as pd
+from sqlalchemy import create_engine, Integer, String, DateTime
+
+def _get_config():
+    # Python_decouple
+    confi = {
+        "engine": config("ENGINE"),
+        "usr": config("USR"),
+        "password": config("PASSWORD"),
+        "port": config("PORT"),
+        "database": config("DATABASE"),
+    }
+    return confi
+
+
+def _get_connection(ENGINE, USR, PASSWORD, PORT, DATABASE):
+    """Se genera la coneccion a la base de datos correspondiente
+
+    Returns:
+        _type_: se retorna la coneccion para operar con la base de datos.
+    """
+    return create_engine(f"{ENGINE}+pymysql://{USR}:{PASSWORD}@localhost:{PORT}/{DATABASE}")
+
+def grabar_DB_categorias(lista_datos):
+    
+    # armo el data frame para grabar la base de datos
+    df_categorias = pd.DataFrame(data=lista_datos, index=None) 
+    df_categorias.to_excel('categorias.xlsx')
+    
+    confi = _get_config()
+
+    ENGINE = confi.get("engine")
+    USR = confi.get("usr")
+    PASSWORD = confi.get("password")
+    PORT = confi.get("port")
+    DATABASE = confi.get("database")
+
+    logger = logging.getLogger()
+    try:
+        # genero un objeto con la coneccion a la base de datos
+        engine = _get_connection(ENGINE, USR, PASSWORD, PORT, DATABASE)
+        logger.info(
+            f"Coneccion exitosa a la base de datos: {DATABASE} por el puerto: {PORT}"
+        )
+        df_categorias.to_sql(
+            con=engine,
+            name="categorias",
+            if_exists="replace",
+            index=True,
+            index_label="id",
+            dtype={
+                "codigo_categoria": Integer,
+                "categoria": String(150),
+                "sub_categoria": String(150),
+                "descripcion_grupo": String(150),
+                
+            },
+            method="multi",
+        )
+        
+        # para el logging
+        logging.info(
+            "Se actualizaron las tablas de espacios y provincias en la base de datos"
+        )
+    except Exception as ex:
+        logger.error(
+            f"La coneccion a la base de datos: {DATABASE}, no se pudo realizar"
+        )
+        logger.error(ex)
+        raise ex
 
 
 SECCIONES = '//section[@class="section"]'
-#SECCIONES = '//div[@class="category-detail__content"]'
-#SECCIONES = '//*[contains(@class, "category-detail__content") or contains(@class, "category-section")]'
 SUB_CATEGORIA = './/h2[@class="section__header headline1-b"]'
+# Para la categoria 31 Pescado Fresco, tienen una pagina difernte al resto.
+PESCADO_FRESCO = '//div[@class="category-section"]'
+PESCADO_FRESCO_SUB_CATEGORIA = './/h3[@class="category-section__name title1-b"]'
 
 def obtener_datos_categoria(driver, datos_categoria):
 
@@ -29,18 +99,27 @@ def obtener_datos_categoria(driver, datos_categoria):
       sub_categoria = WebDriverWait(seccion, 10).until(
             EC.presence_of_element_located((By.XPATH, SUB_CATEGORIA))
           )
+      datos_categoria['subcategoria'] = sub_categoria.text
       print(f'Categoria {datos_categoria["codigo_categoria"]} = Subcategoria: {sub_categoria.text}')
       y = y + 1
     print(f'Esta categoria tiene: {y} subcategorias')
   else:
-    print(f'GRUPO DE PESCADO FRESCO 31 {datos_categoria["codigo_categoria"]}\n\n\n\n')
+    # Se procesa la informacion de la categoria Pescado Fresco 31 por tener una pagina diferente a las demas
+    divisiones = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, PESCADO_FRESCO))
+          )
+    k = 0
+    for division in divisiones:
+      sleep(random.uniform(2.0, 8.0))
+      pescado_fresco_sub_categoria = WebDriverWait(division, 10).until(
+            EC.presence_of_element_located((By.XPATH, PESCADO_FRESCO_SUB_CATEGORIA))
+          )
+      datos_categoria['subcategoria'] = pescado_fresco_sub_categoria.text
+      print(f'Categoria {datos_categoria["codigo_categoria"]} = Subcategoria: {pescado_fresco_sub_categoria.text}')
+      k = k + 1
+    print(f'Esta categoria tiene: {k} subcategorias')
   
   return datos_categoria
-
-
-
-
-
 
 
 GRUPO_CATEGORIAS = '//div[@class="grid-layout__sidebar"]//ul[@class="category-menu"]'
@@ -105,16 +184,14 @@ def scrap_categorias_productos(driver:Optional[object]) -> None:
             # obtengo el codigo de la categoria
             codigo = int(url_path[2])
             datos_categoria = {
-                    'descripcion_grupo': titulo_grupo_categoria.text,
                     'codigo_categoria': codigo,
                     'categoria': titulo_categoria.text,
-                    'subcategoria': ''
+                    'subcategoria': '',
+                    'descripcion_grupo': titulo_grupo_categoria.text
             }
             print(f'Categoria: {datos_categoria["categoria"]} Codigo: {datos_categoria["codigo_categoria"]}')
             lista_datos.append(obtener_datos_categoria(driver, datos_categoria))
-
             z = z + 1
-            # titulo_categoria.click()
-            # sleep(4.0)
         print(f'para este grupo la cantidad de categorias es: {z} \n')
     print(f'La cantidad de grupos es: {i}')
+    grabar_DB_categorias(lista_datos)
