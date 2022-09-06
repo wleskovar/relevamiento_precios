@@ -1,3 +1,3 @@
-2022-09-06 13:25:28,671|   INFO|mercadona.py:13|mercadona|se cargo correctamente la pagina del Mercadona
-2022-09-06 14:45:54,684|   INFO|scrap_categorias_productos.py:52|grabar_DB_categorias|Coneccion exitosa a la base de datos: mercadona por el puerto: 3306
-2022-09-06 14:45:54,951|   INFO|scrap_categorias_productos.py:72|grabar_DB_categorias|Se actualizaron las tablas de espacios y provincias en la base de datos
+2022-09-06 17:54:45,388|   INFO|mercadona.py:14|mercadona|se cargo correctamente la pagina del Mercadona
+2022-09-06 17:54:45,483|   INFO|datos_DB.py:40|datos_DB|Coneccion exitosa a la base de datos: mercadona por el puerto: 3306
+2022-09-06 17:54:45,483|   INFO|datos_DB.py:45|datos_DB|Se actualizaron las tablas de espacios y provincias en la base de datos

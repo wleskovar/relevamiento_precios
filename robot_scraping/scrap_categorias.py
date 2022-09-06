@@ -11,6 +11,7 @@ from decouple import config
 import pandas as pd
 from sqlalchemy import create_engine, Integer, String, DateTime
 
+
 def _get_config():
     # Python_decouple
     confi = {
@@ -130,7 +131,7 @@ CATEGORIAS = '//li[@class="category-menu__item open"]'
 TITULOS_CATEGORIA = './/li[contains(@class, "subhead1-r category-item")]'
 BUTTON_CATEGORIA = './/button[@class="category-item__link"]'
 
-def scrap_categorias_productos(driver:Optional[object]) -> None:
+def scrap_categorias(driver:Optional[object]) -> None:
 
     grupo_categorias = WebDriverWait(driver, 10).until(
           EC.presence_of_element_located((By.XPATH, GRUPO_CATEGORIAS))

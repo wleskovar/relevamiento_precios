@@ -50,23 +50,7 @@ def home_to_categorias(driver:Optional[object]) -> int:
     categorias = WebDriverWait(driver, 10).until(
           EC.presence_of_element_located((By.XPATH, CATEGORIAS))
         )
-    categorias.send_keys("webdriver" + Keys.ENTER)
-
-    sleep(12.0)
-
-    
-        
+    categorias.send_keys("webdriver" + Keys.ENTER) 
+    sleep(12.0)        
     return driver
-
-
-
-    # url_categoria = driver.current_url
-    # url_parceada = urlparse(url_categoria)
-    # url_path = url_parceada[2].split("/")
-    # codigo = int(url_path[2])
-    # print(codigo)
-    # driver.close() 
-   
-   # carga todos los grupos de categorias y la retorna para su tratamiento 
-    
 

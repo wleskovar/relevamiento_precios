@@ -4,6 +4,7 @@ import argparse
 from typing import Optional
 import logging
 from decouple import config
+
 from robot_scraping.log_configuracion import configure_logger
 from robot_scraping.mercadona import mercadona
 
