@@ -17,6 +17,6 @@ def mercadona(driver:Optional[object]) ->None:
         logger.error(ex)
         raise ex
 
-    #grupo_categorias = home_to_categorias(driver)
+    grupo_categorias = home_to_categorias(driver)
     #scrap_categorias(grupo_categorias)
-    scrap_productos(driver)
+    scrap_productos(grupo_categorias)
